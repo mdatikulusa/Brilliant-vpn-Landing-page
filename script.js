@@ -6,6 +6,24 @@ document.addEventListener("DOMContentLoaded", function () {
     currentSlides[i] = 0;
   }
 
+  function updateDots(cardIndex, activeIndex) {
+    var card = cards[cardIndex];
+
+    if (!card) {
+      return;
+    }
+
+    var dots = card.querySelectorAll(".dot-btn");
+
+    for (var d = 0; d < dots.length; d++) {
+      dots[d].classList.remove("active");
+    }
+
+    if (dots[activeIndex]) {
+      dots[activeIndex].classList.add("active");
+    }
+  }
+
   function updateSlider(cardIndex, slideIndex) {
     var card = cards[cardIndex];
 
@@ -13,32 +31,53 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    var slides = card.querySelector(".slides");
     var images = card.querySelectorAll(".slides img");
-    var dots = card.querySelectorAll(".dot-btn");
+    var totalImages = images.length;
 
-    if (!slides || images.length === 0) {
+    if (totalImages === 0) {
       return;
     }
 
-    if (slideIndex >= images.length) {
+    if (slideIndex >= totalImages) {
       slideIndex = 0;
     }
 
     if (slideIndex < 0) {
-      slideIndex = images.length - 1;
+      slideIndex = totalImages - 1;
     }
 
-    slides.style.transform = "translateX(-" + (slideIndex * 100) + "%)";
+    var prevIndex = slideIndex - 1;
+    if (prevIndex < 0) {
+      prevIndex = totalImages - 1;
+    }
+
+    var nextIndex = slideIndex + 1;
+    if (nextIndex >= totalImages) {
+      nextIndex = 0;
+    }
+
+    for (var i = 0; i < totalImages; i++) {
+      images[i].classList.remove("active");
+      images[i].classList.remove("prev");
+      images[i].classList.remove("next");
+      images[i].classList.remove("hide");
+
+      images[i].classList.add("hide");
+    }
+
+    images[slideIndex].classList.remove("hide");
+    images[slideIndex].classList.add("active");
+
+    if (totalImages > 1) {
+      images[prevIndex].classList.remove("hide");
+      images[prevIndex].classList.add("prev");
+
+      images[nextIndex].classList.remove("hide");
+      images[nextIndex].classList.add("next");
+    }
+
     currentSlides[cardIndex] = slideIndex;
-
-    for (var d = 0; d < dots.length; d++) {
-      dots[d].classList.remove("active");
-    }
-
-    if (dots[slideIndex]) {
-      dots[slideIndex].classList.add("active");
-    }
+    updateDots(cardIndex, slideIndex);
   }
 
   function autoSlide() {
@@ -57,9 +96,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  setInterval(autoSlide, 3000);
-
   for (var c = 0; c < cards.length; c++) {
+    updateSlider(c, 0);
+
     (function (cardIndex) {
       var dots = cards[cardIndex].querySelectorAll(".dot-btn");
 
@@ -72,6 +111,8 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     })(c);
   }
+
+  setInterval(autoSlide, 3000);
 
   document.addEventListener("click", function (event) {
     var target = event.target;
