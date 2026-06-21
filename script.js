@@ -120,21 +120,19 @@ document.addEventListener("DOMContentLoaded", function () {
     if (target.classList.contains("download-btn")) {
       var downloadLink = target.getAttribute("data-link");
 
-      if (downloadLink && downloadLink !== "#") {
-        window.open(downloadLink, "_blank");
-      } else {
-        showToast("Download link not added yet!");
-      }
-    }
+     if (downloadLink && downloadLink !== "#") {
 
-    if (target.classList.contains("copy-btn")) {
-      var copyLink = target.getAttribute("data-link");
+  var a = document.createElement("a");
+  a.href = downloadLink;
+  a.setAttribute("download", "");
 
-      if (copyLink && copyLink !== "#") {
-        copyText(copyLink);
-      } else {
-        showToast("Copy link not added yet!");
-      }
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+} else {
+  showToast("Download link not added yet!");
+}
     }
   });
 
