@@ -134,7 +134,22 @@ document.addEventListener("DOMContentLoaded", function () {
   showToast("Download link not added yet!");
 }
     }
+
+
+    if (target.classList.contains("copy-btn")) {
+  var copyLink = target.getAttribute("data-link");
+
+  if (copyLink && copyLink !== "#") {
+    copyText(copyLink);
+  } else {
+    showToast("Copy link not added yet!");
+  }
+}
+
+
   });
+
+  
 
   function copyText(text) {
     if (navigator.clipboard && window.isSecureContext) {
